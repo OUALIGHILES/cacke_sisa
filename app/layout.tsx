@@ -3,15 +3,16 @@ import { Playfair_Display, Lato, Noto_Sans_Arabic } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/contexts/theme-context'
 import { LanguageProvider } from '@/contexts/language-context'
+import { AuthProvider } from '@/contexts/auth-context'
 import './globals.css'
 
-const playfair = Playfair_Display({ 
+const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: '--font-playfair',
   display: 'swap',
 });
 
-const lato = Lato({ 
+const lato = Lato({
   subsets: ["latin"],
   weight: ['300', '400', '700'],
   variable: '--font-lato',
@@ -59,7 +60,9 @@ export default function RootLayout({
       <body className={`${playfair.variable} ${lato.variable} ${notoArabic.variable} font-sans antialiased`}>
         <ThemeProvider>
           <LanguageProvider>
-            {children}
+            <AuthProvider>
+              {children}
+            </AuthProvider>
           </LanguageProvider>
         </ThemeProvider>
         <Analytics />

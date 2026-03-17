@@ -355,10 +355,93 @@ ON CONFLICT (phone) DO NOTHING;
 -- SELECT SUM(total_price) FROM orders WHERE status = 'completed';
 
 -- Get order with all details including addons
--- SELECT o.*, 
---        cs.name as size_name, 
+-- SELECT o.*,
+--        cs.name as size_name,
 --        array_agg(oa.addon_name) as addons
 -- FROM orders o
 -- LEFT JOIN cake_sizes cs ON o.cake_size_id = cs.id
 -- LEFT JOIN order_addons oa ON o.id = oa.order_id
 -- GROUP BY o.id, cs.name;
+
+-- =====================================================
+-- AUTHENTICATION FUNCTIONS
+-- Run scripts/auth-functions.sql for complete auth setup
+-- =====================================================
+
+-- Quick authentication function for sign in
+CREATE OR REPLACE FUNCTION authenticate_user(p_phone VARCHAR, p_password VARCHAR)
+RETURNS TABLE (
+    id UUID,
+    phone VARCHAR,
+    name VARCHAR,
+    email VARCHAR,
+    role VARCHAR
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        u.id,
+        u.phone,
+        u.name,
+        u.email,
+        u.role
+    FROM users u
+    WHERE u.phone = p_phone 
+    AND u.password = p_password;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Create user function for sign up
+CREATE OR REPLACE FUNCTION create_user(
+    p_phone VARCHAR,
+    p_password VARCHAR,
+    p_name VARCHAR,
+    p_email VARCHAR DEFAULT NULL
+)
+RETURNS TABLE (
+    id UUID,
+    phone VARCHAR,
+    name VARCHAR,
+    email VARCHAR,
+    role VARCHAR
+) AS $$
+DECLARE
+    new_user_id UUID;
+BEGIN
+    -- Check if phone already exists
+    IF EXISTS (SELECT 1 FROM users WHERE phone = p_phone) THEN
+        RAISE EXCEPTION 'Phone number already registered';
+    END IF;
+
+    -- Insert new user
+    INSERT INTO users (phone, password, name, email, role)
+    VALUES (p_phone, p_password, p_name, p_email, 'customer')
+    RETURNING id INTO new_user_id;
+
+    RETURN QUERY
+    SELECT 
+        u.id,
+        u.phone,
+        u.name,
+        u.email,
+        u.role
+    FROM users u
+    WHERE u.id = new_user_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- =====================================================
+-- ROW LEVEL SECURITY (RLS) POLICIES FOR USERS TABLE
+-- =====================================================
+
+-- Allow public to create users (sign up)
+CREATE POLICY "Public can create users" ON users
+    FOR INSERT WITH CHECK (true);
+
+-- Allow users to read their own data
+CREATE POLICY "Users can view own profile" ON users
+    FOR SELECT USING (true); -- Simplified for custom auth - in production, use proper auth
+
+-- Allow users to update their own profile
+CREATE POLICY "Users can update own profile" ON users
+    FOR UPDATE USING (true); -- Simplified for custom auth

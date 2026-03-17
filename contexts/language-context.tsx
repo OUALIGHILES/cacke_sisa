@@ -111,6 +111,23 @@ export const translations: Translations = {
   // Common
   loading: { en: "Loading...", ar: "جاري التحميل...", fr: "Chargement..." },
   from: { en: "From", ar: "من", fr: "À partir de" },
+
+  // Authentication
+  signIn: { en: "Sign In", ar: "تسجيل الدخول", fr: "Se Connecter" },
+  signUp: { en: "Sign Up", ar: "إنشاء حساب", fr: "S'inscrire" },
+  signOut: { en: "Sign Out", ar: "تسجيل الخروج", fr: "Se Déconnecter" },
+  welcomeBack: { en: "Welcome Back", ar: "مرحباً بعودتك", fr: "Bon Retour" },
+  createAccount: { en: "Create Account", ar: "إنشاء حساب", fr: "Créer un Compte" },
+  phone: { en: "Phone Number", ar: "رقم الهاتف", fr: "Numéro de Téléphone" },
+  password: { en: "Password", ar: "كلمة المرور", fr: "Mot de Passe" },
+  confirmPassword: { en: "Confirm Password", ar: "تأكيد كلمة المرور", fr: "Confirmer le Mot de Passe" },
+  fullName: { en: "Full Name", ar: "الاسم الكامل", fr: "Nom Complet" },
+  email: { en: "Email", ar: "البريد الإلكتروني", fr: "Email" },
+  optional: { en: "Optional", ar: "اختياري", fr: "Optionnel" },
+  dontHaveAccount: { en: "Don't have an account?", ar: "ليس لديك حساب؟", fr: "Vous n'avez pas de compte ?" },
+  alreadyHaveAccount: { en: "Already have an account?", ar: "لديك حساب بالفعل؟", fr: "Vous avez déjà un compte ?" },
+  creatingAccount: { en: "Creating account...", ar: "جاري إنشاء الحساب...", fr: "Création du compte..." },
+  signingIn: { en: "Signing in...", ar: "جاري تسجيل الدخول...", fr: "Connexion en cours..." },
 }
 
 interface LanguageContextType {

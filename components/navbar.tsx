@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Menu, X, Cake, Moon, Sun, Globe, ChevronDown } from "lucide-react"
+import { Menu, X, Cake, Moon, Sun, Globe, ChevronDown, LogIn, UserPlus, LogOut, UserCircle } from "lucide-react"
 import { useLanguage, Language } from "@/contexts/language-context"
 import { useTheme } from "@/contexts/theme-context"
+import { useAuth } from "@/contexts/auth-context"
 
 const languages: { code: Language; label: string; flag: string }[] = [
   { code: "en", label: "English", flag: "EN" },
@@ -16,8 +17,10 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false)
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const { language, setLanguage, t } = useLanguage()
   const { theme, toggleTheme } = useTheme()
+  const { user, isAdmin, signOut } = useAuth()
 
   const navLinks = [
     { href: "/", label: t("home") },
@@ -39,10 +42,13 @@ export default function Navbar() {
       if (isLangMenuOpen && !(e.target as Element).closest('.lang-menu')) {
         setIsLangMenuOpen(false)
       }
+      if (isUserMenuOpen && !(e.target as Element).closest('.user-menu')) {
+        setIsUserMenuOpen(false)
+      }
     }
     document.addEventListener('click', handleClickOutside)
     return () => document.removeEventListener('click', handleClickOutside)
-  }, [isLangMenuOpen])
+  }, [isLangMenuOpen, isUserMenuOpen])
 
   const currentLang = languages.find(l => l.code === language)
 
@@ -97,7 +103,7 @@ export default function Navbar() {
                 <span className="font-semibold">{currentLang?.flag}</span>
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isLangMenuOpen ? 'rotate-180' : ''}`} />
               </button>
-              
+
               {isLangMenuOpen && (
                 <div className="absolute top-full mt-2 right-0 bg-card border border-border rounded-2xl shadow-2xl overflow-hidden min-w-[160px] animate-scale-in z-50">
                   {languages.map((lang) => (
@@ -135,13 +141,71 @@ export default function Navbar() {
               )}
             </button>
 
-            {/* Admin Button - Desktop */}
-            <Link
-              href="/admin"
-              className="hidden lg:inline-flex px-5 py-2 rounded-full bg-primary text-primary-foreground font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm"
-            >
-              {t("admin")}
-            </Link>
+            {/* User Auth Buttons - Desktop */}
+            {user ? (
+              <div className="hidden lg:flex items-center gap-3">
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    className="inline-flex px-5 py-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm"
+                  >
+                    {t("admin")}
+                  </Link>
+                )}
+                <div className="relative user-menu">
+                  <button
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-primary/10 hover:bg-primary/20 border border-primary/30 transition-all duration-300 text-sm font-medium text-primary shadow-sm hover:shadow-md"
+                  >
+                    <UserCircle className="w-5 h-5" />
+                    <span className="font-semibold">{user.name || user.email?.split('@')[0] || "User"}</span>
+                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isUserMenuOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {isUserMenuOpen && (
+                    <div className="absolute top-full mt-2 right-0 bg-card border border-border rounded-2xl shadow-2xl overflow-hidden min-w-[180px] animate-scale-in z-50">
+                      {isAdmin && (
+                        <Link
+                          href="/admin"
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-primary/10 transition-all duration-200 text-foreground border-b border-border"
+                          onClick={() => setIsUserMenuOpen(false)}
+                        >
+                          <Cake className="w-4 h-4 text-primary" />
+                          <span className="text-sm font-medium">Admin Dashboard</span>
+                        </Link>
+                      )}
+                      <button
+                        onClick={() => {
+                          signOut()
+                          setIsUserMenuOpen(false)
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-destructive/10 transition-all duration-200 text-destructive text-left"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span className="text-sm font-medium">Sign Out</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="hidden lg:flex items-center gap-2">
+                <Link
+                  href="/signin"
+                  className="inline-flex px-5 py-2.5 rounded-full bg-secondary/80 hover:bg-secondary border border-border/50 text-foreground font-semibold hover:shadow-md hover:scale-105 transition-all duration-300 text-sm items-center gap-2"
+                >
+                  <LogIn className="w-4 h-4" />
+                  {t("signIn")}
+                </Link>
+                <Link
+                  href="/signup"
+                  className="inline-flex px-5 py-2.5 rounded-full bg-primary text-primary-foreground font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 text-sm items-center gap-2"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  {t("signUp")}
+                </Link>
+              </div>
+            )}
 
             {/* Mobile Menu Button */}
             <button
@@ -161,7 +225,7 @@ export default function Navbar() {
         {/* Mobile Menu */}
         <div
           className={`lg:hidden overflow-hidden transition-all duration-300 ${
-            isMobileMenuOpen ? "max-h-96 mt-4" : "max-h-0"
+            isMobileMenuOpen ? "max-h-[500px] mt-4" : "max-h-0"
           }`}
         >
           <div className="glass rounded-2xl p-4 space-y-2">
@@ -175,13 +239,47 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/admin"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-xl bg-primary text-primary-foreground text-center font-semibold"
-            >
-              {t("admin")}
-            </Link>
+            {user ? (
+              <>
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block px-4 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-white text-center font-semibold"
+                  >
+                    {t("admin")}
+                  </Link>
+                )}
+                <button
+                  onClick={() => {
+                    signOut()
+                    setIsMobileMenuOpen(false)
+                  }}
+                  className="w-full px-4 py-3 rounded-xl bg-destructive/10 text-destructive text-center font-semibold"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <div className="grid grid-cols-2 gap-2 pt-2">
+                <Link
+                  href="/signin"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-secondary text-foreground font-semibold"
+                >
+                  <LogIn className="w-4 h-4" />
+                  {t("signIn")}
+                </Link>
+                <Link
+                  href="/signup"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary text-primary-foreground font-semibold"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  {t("signUp")}
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
