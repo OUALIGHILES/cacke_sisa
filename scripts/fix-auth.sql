@@ -45,7 +45,7 @@ CREATE POLICY "Public can view users" ON users
 -- Step 5: Create admin user if not exists
 INSERT INTO users (phone, password, role, name, email)
 VALUES (
-    '0000000000',
+    '213540000739',
     'admin123',
     'admin',
     'Admin User',

@@ -28,15 +28,15 @@ export default function SignInPage() {
     const newErrors: { phone?: string; password?: string } = {}
 
     if (!formData.phone.trim()) {
-      newErrors.phone = "Phone number is required"
+      newErrors.phone = t("phoneRequired")
     } else if (!/^\d{10}$/.test(formData.phone.replace(/\s/g, ""))) {
-      newErrors.phone = "Please enter a valid 10-digit phone number"
+      newErrors.phone = t("validPhone")
     }
 
     if (!formData.password) {
-      newErrors.password = "Password is required"
+      newErrors.password = t("passwordRequired")
     } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters"
+      newErrors.password = t("passwordMinLength")
     }
 
     setErrors(newErrors)
@@ -53,10 +53,10 @@ export default function SignInPage() {
       const { error } = await signIn(formData.phone.trim(), formData.password)
 
       if (error) {
-        toast.error(error.message || "Failed to sign in")
-        setErrors({ password: "Invalid phone number or password" })
+        toast.error(error.message || t("invalidCredentials"))
+        setErrors({ password: t("invalidCredentials") })
       } else {
-        toast.success("Successfully signed in!")
+        toast.success(t("successfullySignedIn"))
         router.push("/")
         router.refresh()
       }
@@ -93,9 +93,9 @@ export default function SignInPage() {
             </div>
           </Link>
           <h1 className="text-3xl font-bold mb-2">
-            <span className="text-gradient">Welcome Back</span>
+            <span className="text-gradient">{t("welcomeBack")}</span>
           </h1>
-          <p className="text-muted-foreground">Sign in to your SISA_Cake account</p>
+          <p className="text-muted-foreground">{t("signInToAccount")}</p>
         </div>
 
         {/* Sign In Form */}
@@ -103,10 +103,10 @@ export default function SignInPage() {
           <CardHeader className="text-center pb-2">
             <CardTitle className="text-2xl font-bold flex items-center justify-center gap-2">
               <LogIn className="w-6 h-6 text-primary" />
-              Sign In
+              {t("signIn")}
             </CardTitle>
             <CardDescription>
-              Enter your credentials to access your account
+              {t("enterCredentials")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -114,7 +114,7 @@ export default function SignInPage() {
               {/* Phone Input */}
               <div className="space-y-2">
                 <Label htmlFor="phone" className="text-sm font-medium">
-                  Phone Number
+                  {t("phone")}
                 </Label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -140,7 +140,7 @@ export default function SignInPage() {
               {/* Password Input */}
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-sm font-medium">
-                  Password
+                  {t("password")}
                 </Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -148,7 +148,7 @@ export default function SignInPage() {
                     id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
+                    placeholder={t("password")}
                     value={formData.password}
                     onChange={handleChange}
                     className={`pl-11 pr-11 h-12 ${errors.password ? "border-destructive focus-visible:ring-destructive/20" : ""}`}
@@ -184,32 +184,32 @@ export default function SignInPage() {
                 {isLoading ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    Signing in...
+                    {t("signingIn")}
                   </span>
                 ) : (
-                  "Sign In"
+                  t("signIn")
                 )}
               </Button>
             </form>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <div className="text-sm text-center text-muted-foreground">
-              Don&apos;t have an account?{" "}
+              {t("dontHaveAccount")}{" "}
               <Link
                 href="/signup"
                 className="text-primary font-semibold hover:underline"
               >
-                Sign up
+                {t("signUp")}
               </Link>
             </div>
             <div className="text-xs text-center text-muted-foreground">
-              By signing in, you agree to our{" "}
+              {t("bySigningIn")}{" "}
               <Link href="#" className="underline hover:text-primary">
-                Terms of Service
+                {t("termsOfService")}
               </Link>{" "}
-              and{" "}
+              {t("and")}{" "}
               <Link href="#" className="underline hover:text-primary">
-                Privacy Policy
+                {t("privacyPolicy")}
               </Link>
             </div>
           </CardFooter>
@@ -217,12 +217,12 @@ export default function SignInPage() {
 
         {/* Demo Credentials */}
         <div className="mt-6 p-4 rounded-xl bg-muted/50 border border-border/50 text-center">
-          <p className="text-sm font-medium mb-2">Demo Admin Credentials:</p>
+          <p className="text-sm font-medium mb-2">{t("demoCredentials")}</p>
           <p className="text-xs text-muted-foreground">
-            Phone: <code className="bg-secondary px-2 py-0.5 rounded">0000000000</code>
+            {t("phone")}: <code className="bg-secondary px-2 py-0.5 rounded">213540000739</code>
           </p>
           <p className="text-xs text-muted-foreground">
-            Password: <code className="bg-secondary px-2 py-0.5 rounded">admin123</code>
+            {t("password")}: <code className="bg-secondary px-2 py-0.5 rounded">admin123</code>
           </p>
         </div>
       </div>

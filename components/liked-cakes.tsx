@@ -1,14 +1,25 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Eye, ShoppingBag, Star, Filter } from "lucide-react"
+import { Eye, ShoppingBag, Star, Heart, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useLanguage } from "@/contexts/language-context"
 
-// Sample cake data - in production this would come from Supabase
-const cakes = [
+interface Cake {
+  id: number
+  title: string
+  description: string
+  price: number
+  image: string
+  category: string
+  rating: number
+  popular: boolean
+}
+
+// Sample cake data - same as gallery
+const allCakes: Cake[] = [
   {
     id: 1,
     title: "Classic Birthday Cake",
@@ -91,45 +102,106 @@ const cakes = [
   },
 ]
 
-export default function CakeGallery() {
-  const [selectedCategory, setSelectedCategory] = useState("all")
+export default function LikedCakes() {
+  const [likedCakes, setLikedCakes] = useState<Cake[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const { t, dir } = useLanguage()
 
-  const filteredCakes = selectedCategory === "all"
-    ? cakes
-    : cakes.filter(cake => cake.category === selectedCategory)
+  useEffect(() => {
+    // Load liked cakes from localStorage
+    const stored = localStorage.getItem("liked_cakes")
+    if (stored) {
+      try {
+        const likedIds = JSON.parse(stored)
+        const liked = allCakes.filter(cake => likedIds.includes(cake.id))
+        setLikedCakes(liked)
+      } catch (error) {
+        console.error("Error loading liked cakes:", error)
+      }
+    }
+    setIsLoading(false)
+  }, [])
 
-  const categories = [
-    { id: "all", label: t("allCakes") },
-    { id: "birthday", label: t("birthday") },
-    { id: "wedding", label: t("wedding") },
-    { id: "kids", label: t("kids") },
-  ]
+  const removeLike = (cakeId: number) => {
+    const stored = localStorage.getItem("liked_cakes")
+    if (stored) {
+      const likedIds = JSON.parse(stored)
+      const newLikedIds = likedIds.filter((id: number) => id !== cakeId)
+      localStorage.setItem("liked_cakes", JSON.stringify(newLikedIds))
+      setLikedCakes(likedCakes.filter(cake => cake.id !== cakeId))
+
+      // Dispatch storage event to sync across tabs/components
+      window.dispatchEvent(new Event("storage"))
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <section className="py-20 bg-background" dir={dir}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-muted-foreground">{t("loading")}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  if (likedCakes.length === 0) {
+    return (
+      <section className="py-20 bg-background" dir={dir}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center py-20">
+            <div className="w-24 h-24 rounded-full bg-secondary flex items-center justify-center mx-auto mb-6">
+              <Heart className="w-12 h-12 text-muted-foreground" />
+            </div>
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              {t("noLikedCakesYet")}
+            </h2>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+              {t("youHaventLiked")}
+            </p>
+            <Link href="/gallery">
+              <Button className="rounded-full px-8 py-6 text-lg">
+                {t("browseGallery")}
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="py-20 bg-background" dir={dir}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Filter Bar */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mb-12">
-          <Filter className="w-5 h-5 text-muted-foreground" />
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                selectedCategory === category.id
-                  ? "bg-primary text-primary-foreground shadow-lg"
-                  : "bg-secondary text-secondary-foreground hover:bg-primary/10"
-              }`}
-            >
-              {category.label}
-            </button>
-          ))}
+        {/* Count Badge */}
+        <div className="mb-8 flex items-center justify-between">
+          <Badge variant="secondary" className="text-sm px-4 py-2">
+            <Heart className="w-4 h-4 mr-2 fill-primary text-primary" />
+            {likedCakes.length} {likedCakes.length === 1 ? t("cakeLiked") : t("cakesLiked")}
+          </Badge>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              localStorage.removeItem("liked_cakes")
+              setLikedCakes([])
+              window.dispatchEvent(new Event("storage"))
+            }}
+            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            {t("clearAll")}
+          </Button>
         </div>
 
-        {/* Cake Grid */}
+        {/* Cakes Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-          {filteredCakes.map((cake, index) => (
+          {likedCakes.map((cake, index) => (
             <div
               key={cake.id}
               className="group relative bg-card rounded-2xl overflow-hidden shadow-lg cake-card-hover animate-fade-in-up"
@@ -151,6 +223,15 @@ export default function CakeGallery() {
                     </Badge>
                   )}
                 </div>
+
+                {/* Remove Like Button */}
+                <button
+                  onClick={() => removeLike(cake.id)}
+                  className="absolute top-4 right-4 p-2 rounded-full glass hover:bg-destructive hover:text-destructive-foreground transition-all duration-300"
+                  aria-label={t("removeFromLiked")}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
 
                 {/* Overlay on Hover */}
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">

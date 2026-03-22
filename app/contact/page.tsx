@@ -1,57 +1,55 @@
+"use client"
+
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import WhatsAppButton from "@/components/whatsapp-button"
 import ContactForm from "@/components/contact-form"
 import LocationMap from "@/components/location-map"
 import { Phone, Mail, MapPin, Clock, Instagram, MessageCircle } from "lucide-react"
-
-export const metadata = {
-  title: "Contact Us | SISA_Cake",
-  description: "Get in touch with SISA_Cake. Send us a message, call us, or visit our location.",
-}
+import { useLanguage } from "@/contexts/language-context"
 
 const contactInfo = [
   {
     icon: Phone,
-    title: "Phone / WhatsApp",
-    value: "+1 234 567 890",
-    link: "https://wa.me/1234567890",
+    titleKey: "phone",
+    value: "+213 54 00 00 739",
+    link: "https://wa.me/213540000739",
   },
   {
     icon: Mail,
-    title: "Email",
-    value: "hello@sisacake.com",
-    link: "mailto:hello@sisacake.com",
+    titleKey: "email",
+    value: "contact@sisacake.com",
+    link: "mailto:contact@sisacake.com",
   },
   {
     icon: Instagram,
-    title: "Instagram",
+    titleKey: "instagram",
     value: "@sisa_cake",
     link: "https://instagram.com/sisa_cake",
   },
   {
     icon: Clock,
-    title: "Working Hours",
+    titleKey: "workingHours",
     value: "Mon-Sat: 9AM - 6PM",
     link: null,
   },
 ]
 
 export default function ContactPage() {
+  const { t } = useLanguage()
+
   return (
     <main className="min-h-screen">
       <Navbar />
-      
+
       {/* Page Header */}
       <section className="pt-32 pb-16 gradient-luxury">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-            <span className="text-gradient">Get In</span>{" "}
-            <span className="text-foreground">Touch</span>
+            <span className="text-gradient">{t("getInTouch")}</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Have questions or want to place an order? We would love to hear from you. 
-            Send us a message and we will respond as soon as possible.
+            {t("haveQuestions")}
           </p>
         </div>
       </section>
@@ -63,10 +61,9 @@ export default function ContactPage() {
             {/* Contact Info & Social */}
             <div className="space-y-8 animate-fade-in-up">
               <div>
-                <h2 className="text-3xl font-bold mb-6">Contact Information</h2>
+                <h2 className="text-3xl font-bold mb-6">{t("contactInfo")}</h2>
                 <p className="text-muted-foreground mb-8 leading-relaxed">
-                  Reach out to us through any of these channels. We typically respond 
-                  within 2-4 hours during business hours.
+                  {t("reachOut")}
                 </p>
               </div>
 
@@ -80,9 +77,9 @@ export default function ContactPage() {
                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                       <info.icon className="w-6 h-6 text-primary" />
                     </div>
-                    <h3 className="font-semibold mb-1">{info.title}</h3>
+                    <h3 className="font-semibold mb-1">{t(info.titleKey)}</h3>
                     {info.link ? (
-                      <a 
+                      <a
                         href={info.link}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -99,23 +96,23 @@ export default function ContactPage() {
 
               {/* Quick Contact Buttons */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold">Quick Contact</h3>
+                <h3 className="text-xl font-semibold">{t("quickContact")}</h3>
                 <div className="flex flex-wrap gap-4">
                   <a
-                    href="https://wa.me/1234567890"
+                    href="https://wa.me/213540000739"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors"
                   >
                     <MessageCircle className="w-5 h-5" />
-                    WhatsApp
+                    {t("whatsapp")}
                   </a>
                   <a
-                    href="mailto:hello@sisacake.com"
+                    href="mailto:contact@sisacake.com"
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity"
                   >
                     <Mail className="w-5 h-5" />
-                    Email Us
+                    {t("emailUs")}
                   </a>
                   <a
                     href="https://instagram.com/sisa_cake"
@@ -124,7 +121,7 @@ export default function ContactPage() {
                     className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold hover:opacity-90 transition-opacity"
                   >
                     <Instagram className="w-5 h-5" />
-                    Instagram
+                    {t("instagram")}
                   </a>
                 </div>
               </div>
@@ -136,10 +133,10 @@ export default function ContactPage() {
                     <MapPin className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Our Location</h3>
+                    <h3 className="font-semibold text-lg">{t("ourLocation")}</h3>
                     <p className="text-muted-foreground">
-                      123 Bakery Street, Sweet Town<br />
-                      New York, NY 10001
+                      Ait Anane, Darguina<br />
+                      Bejaia, Algeria
                     </p>
                   </div>
                 </div>

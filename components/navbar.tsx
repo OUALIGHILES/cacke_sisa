@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Menu, X, Cake, Moon, Sun, Globe, ChevronDown, LogIn, UserPlus, LogOut, UserCircle } from "lucide-react"
+import { Menu, X, Cake, Moon, Sun, Globe, ChevronDown, LogIn, UserPlus, LogOut, UserCircle, Heart, MessageSquare } from "lucide-react"
 import { useLanguage, Language } from "@/contexts/language-context"
 import { useTheme } from "@/contexts/theme-context"
 import { useAuth } from "@/contexts/auth-context"
@@ -18,6 +18,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [likedCount, setLikedCount] = useState(0)
   const { language, setLanguage, t } = useLanguage()
   const { theme, toggleTheme } = useTheme()
   const { user, isAdmin, signOut } = useAuth()
@@ -25,6 +26,8 @@ export default function Navbar() {
   const navLinks = [
     { href: "/", label: t("home") },
     { href: "/gallery", label: t("gallery") },
+    { href: "/liked", label: t("liked"), icon: Heart },
+    { href: "/messages", label: t("messages"), icon: MessageSquare },
     { href: "/customize", label: t("customize") },
     { href: "/contact", label: t("contact") },
   ]
@@ -35,6 +38,23 @@ export default function Navbar() {
     }
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  useEffect(() => {
+    // Load liked count
+    const loadLikedCount = () => {
+      const stored = localStorage.getItem("liked_cakes")
+      if (stored) {
+        const likedIds = JSON.parse(stored)
+        setLikedCount(likedIds.length)
+      } else {
+        setLikedCount(0)
+      }
+    }
+    
+    loadLikedCount()
+    window.addEventListener("storage", loadLikedCount)
+    return () => window.removeEventListener("storage", loadLikedCount)
   }, [])
 
   useEffect(() => {
@@ -82,9 +102,15 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="relative text-foreground/80 hover:text-primary font-medium transition-colors duration-300 group"
+                className="relative text-foreground/80 hover:text-primary font-medium transition-colors duration-300 group flex items-center gap-1.5"
               >
+                {link.icon && <link.icon className="w-4 h-4" />}
                 {link.label}
+                {link.href === "/liked" && likedCount > 0 && (
+                  <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
+                    {likedCount}
+                  </span>
+                )}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
               </Link>
             ))}
@@ -234,9 +260,17 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-4 py-3 rounded-xl text-foreground hover:bg-primary/10 hover:text-primary font-medium transition-colors"
+                className="block px-4 py-3 rounded-xl text-foreground hover:bg-primary/10 hover:text-primary font-medium transition-colors flex items-center justify-between"
               >
-                {link.label}
+                <span className="flex items-center gap-2">
+                  {link.icon && <link.icon className="w-4 h-4" />}
+                  {link.label}
+                </span>
+                {link.href === "/liked" && likedCount > 0 && (
+                  <span className="w-5 h-5 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
+                    {likedCount}
+                  </span>
+                )}
               </Link>
             ))}
             {user ? (

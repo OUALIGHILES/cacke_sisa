@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { 
-  Plus, 
-  Pencil, 
-  Trash2, 
+import {
+  Plus,
+  Pencil,
+  Trash2,
   Search,
   Upload,
   X,
@@ -22,6 +22,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { useLanguage } from "@/contexts/language-context"
 
 // Sample cake data
 const initialCakes = [
@@ -32,6 +33,7 @@ const initialCakes = [
 ]
 
 export default function AdminCakesPage() {
+  const { t } = useLanguage()
   const [cakes, setCakes] = useState(initialCakes)
   const [searchQuery, setSearchQuery] = useState("")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -91,7 +93,7 @@ export default function AdminCakesPage() {
   }
 
   const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this cake?")) {
+    if (confirm(t("deleteCakeConfirm"))) {
       setCakes(cakes.filter((cake) => cake.id !== id))
     }
   }
@@ -101,25 +103,25 @@ export default function AdminCakesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Manage Cakes</h1>
-          <p className="text-muted-foreground">Add, edit, and delete cake products</p>
+          <h1 className="text-3xl font-bold">{t("manageCakes")}</h1>
+          <p className="text-muted-foreground">{t("addEditDeleteCake")}</p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button onClick={() => handleOpenDialog()} className="rounded-full">
               <Plus className="w-5 h-5 mr-2" />
-              Add New Cake
+              {t("addNewCake")}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
               <DialogTitle>
-                {editingCake ? "Edit Cake" : "Add New Cake"}
+                {editingCake ? t("editCake") : t("addNewCake")}
               </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="title">Cake Title</Label>
+                <Label htmlFor="title">{t("cakeTitle")}</Label>
                 <Input
                   id="title"
                   value={formData.title}
@@ -129,17 +131,17 @@ export default function AdminCakesPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">{t("description")}</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Describe the cake..."
+                  placeholder={t("describeCake")}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="price">Price ($)</Label>
+                <Label htmlFor="price">{t("price")}</Label>
                 <Input
                   id="price"
                   type="number"
@@ -150,7 +152,7 @@ export default function AdminCakesPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="image">Image URL</Label>
+                <Label htmlFor="image">{t("imageUrl")}</Label>
                 <Input
                   id="image"
                   value={formData.image}
@@ -160,13 +162,13 @@ export default function AdminCakesPage() {
               </div>
               <div className="flex justify-end gap-3">
                 <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
-                  Cancel
+                  {t("cancel")}
                 </Button>
                 <Button type="submit" disabled={isLoading}>
                   {isLoading ? (
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   ) : null}
-                  {editingCake ? "Save Changes" : "Add Cake"}
+                  {editingCake ? t("saveChanges") : t("addCake")}
                 </Button>
               </div>
             </form>
@@ -178,7 +180,7 @@ export default function AdminCakesPage() {
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
         <Input
-          placeholder="Search cakes..."
+          placeholder={t("searchCakes")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="pl-10"
@@ -203,7 +205,7 @@ export default function AdminCakesPage() {
                   className="rounded-full"
                 >
                   <Pencil className="w-4 h-4 mr-1" />
-                  Edit
+                  {t("edit")}
                 </Button>
                 <Button
                   size="sm"
@@ -212,14 +214,14 @@ export default function AdminCakesPage() {
                   className="rounded-full"
                 >
                   <Trash2 className="w-4 h-4 mr-1" />
-                  Delete
+                  {t("delete")}
                 </Button>
               </div>
             </div>
             <CardContent className="p-4">
               <h3 className="font-semibold text-lg mb-1">{cake.title}</h3>
               <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{cake.description}</p>
-              <p className="text-xl font-bold text-primary">${cake.price}</p>
+              <p className="text-xl font-bold text-primary">{cake.price} DA</p>
             </CardContent>
           </Card>
         ))}
@@ -227,7 +229,7 @@ export default function AdminCakesPage() {
 
       {filteredCakes.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No cakes found</p>
+          <p className="text-muted-foreground">{t("noCakesFound")}</p>
         </div>
       )}
     </div>

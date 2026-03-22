@@ -1,44 +1,46 @@
 "use client"
 
 import { useState, useMemo } from "react"
-import { 
-  Check, 
-  Cake, 
-  Plus, 
+import {
+  Check,
+  Cake,
+  Plus,
   Minus,
   ShoppingBag,
   Sparkles
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-
-// Sample data - in production this would come from Supabase
-const cakeSizes = [
-  { id: 1, name: "Small Cake", description: "6 inch - Serves 6-8", price: 35 },
-  { id: 2, name: "Medium Cake", description: "8 inch - Serves 10-12", price: 50 },
-  { id: 3, name: "Large Cake", description: "10 inch - Serves 15-20", price: 70 },
-  { id: 4, name: "Extra Large", description: "12 inch - Serves 25-30", price: 95 },
-]
-
-const cakeAddons = [
-  { id: 1, name: "Add Almonds", description: "Premium roasted almonds", price: 5 },
-  { id: 2, name: "Extra Chocolate", description: "Belgian dark chocolate drizzle", price: 6 },
-  { id: 3, name: "Custom Name Writing", description: "Personalized message", price: 4 },
-  { id: 4, name: "Extra Decoration", description: "Additional fondant decorations", price: 8 },
-  { id: 5, name: "Premium Fruits", description: "Fresh seasonal fruits", price: 10 },
-  { id: 6, name: "Gold Leaf Accent", description: "Edible gold leaf decoration", price: 15 },
-  { id: 7, name: "Macarons Topping", description: "6 French macarons on top", price: 12 },
-  { id: 8, name: "Fresh Flowers", description: "Edible flower decoration", price: 10 },
-]
-
-const cakeImages = [
-  "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=600&fit=crop",
-  "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=600&h=600&fit=crop",
-  "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&h=600&fit=crop",
-  "https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=600&h=600&fit=crop",
-]
+import { useLanguage } from "@/contexts/language-context"
 
 export default function CakeConfigurator() {
+  const { t, dir } = useLanguage()
+  
+  const cakeSizes = [
+    { id: 1, name: t("smallCake"), description: `6 ${t("inchServes")} 6-8`, price: 35 },
+    { id: 2, name: t("mediumCake"), description: `8 ${t("inchServes")} 10-12`, price: 50 },
+    { id: 3, name: t("largeCake"), description: `10 ${t("inchServes")} 15-20`, price: 70 },
+    { id: 4, name: t("extraLarge"), description: `12 ${t("inchServes")} 25-30`, price: 95 },
+  ]
+
+  const cakeAddons = [
+    { id: 1, name: t("addAlmonds"), description: t("premiumRoastedAlmonds"), price: 5 },
+    { id: 2, name: t("extraChocolate"), description: t("belgianChocolate"), price: 6 },
+    { id: 3, name: t("customNameWriting"), description: t("personalizedMessage"), price: 4 },
+    { id: 4, name: t("extraDecoration"), description: t("additionalFondant"), price: 8 },
+    { id: 5, name: t("premiumFruits"), description: t("freshSeasonalFruits"), price: 10 },
+    { id: 6, name: t("goldLeafAccent"), description: t("edibleGold"), price: 15 },
+    { id: 7, name: t("macaronsTopping"), description: t("frenchMacarons"), price: 12 },
+    { id: 8, name: t("freshFlowers"), description: t("edibleFlower"), price: 10 },
+  ]
+
+  const cakeImages = [
+    "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=600&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&h=600&fit=crop",
+    "https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=600&h=600&fit=crop",
+  ]
+
   const [selectedSize, setSelectedSize] = useState(cakeSizes[1])
   const [selectedAddons, setSelectedAddons] = useState<number[]>([])
   const [quantity, setQuantity] = useState(1)
@@ -69,18 +71,18 @@ export default function CakeConfigurator() {
       .join(", ")
 
     const message = encodeURIComponent(
-      `Hello! I would like to order:\n\n` +
-      `Cake Size: ${selectedSize.name} ($${selectedSize.price})\n` +
-      `Quantity: ${quantity}\n` +
-      (addonNames ? `Extras: ${addonNames}\n` : "") +
-      `\nTotal Price: $${subtotal}\n\n` +
-      `Please let me know about availability and delivery options.`
+      `${t("helloOrder")}\n\n` +
+      `${t("cakeSize")}: ${selectedSize.name} (${selectedSize.price} ${t("da")})\n` +
+      `${t("quantity")}: ${quantity}\n` +
+      (addonNames ? `${t("extras")}: ${addonNames}\n` : "") +
+      `\n${t("totalPrice")}: ${subtotal} ${t("da")}\n\n` +
+      `${t("pleaseLetKnow")}`
     )
-    window.open(`https://wa.me/1234567890?text=${message}`, "_blank")
+    window.open(`https://wa.me/213540000739?text=${message}`, "_blank")
   }
 
   return (
-    <section className="py-16 bg-background">
+    <section className="py-16 bg-background" dir={dir}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12">
           {/* Left Side - Cake Preview */}
@@ -91,7 +93,7 @@ export default function CakeConfigurator() {
                 alt="Cake Preview"
                 className="w-full h-full object-cover transition-all duration-500"
               />
-              
+
               {/* Size indicator */}
               <div className="absolute bottom-4 left-4 right-4">
                 <div className="glass rounded-2xl p-4">
@@ -100,7 +102,7 @@ export default function CakeConfigurator() {
                       <p className="font-semibold text-foreground">{selectedSize.name}</p>
                       <p className="text-sm text-muted-foreground">{selectedSize.description}</p>
                     </div>
-                    <div className="text-2xl font-bold text-gradient">${selectedSize.price}</div>
+                    <div className="text-2xl font-bold text-gradient">{selectedSize.price} {t("da")}</div>
                   </div>
                 </div>
               </div>
@@ -121,7 +123,7 @@ export default function CakeConfigurator() {
                   })}
                   {selectedAddons.length > 3 && (
                     <span className="px-3 py-1 text-xs font-medium rounded-full bg-accent text-accent-foreground">
-                      +{selectedAddons.length - 3} more
+                      +{selectedAddons.length - 3} {t("more")}
                     </span>
                   )}
                 </div>
@@ -152,7 +154,7 @@ export default function CakeConfigurator() {
             <div>
               <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                 <Cake className="w-6 h-6 text-primary" />
-                Choose Cake Size
+                {t("chooseCakeSize")}
               </h2>
               <div className="grid grid-cols-2 gap-4">
                 {cakeSizes.map((size) => (
@@ -176,7 +178,7 @@ export default function CakeConfigurator() {
                         </div>
                       )}
                     </div>
-                    <p className="text-xl font-bold text-gradient mt-2">${size.price}</p>
+                    <p className="text-xl font-bold text-gradient mt-2">{size.price} {t("da")}</p>
                   </button>
                 ))}
               </div>
@@ -186,7 +188,7 @@ export default function CakeConfigurator() {
             <div>
               <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                 <Sparkles className="w-6 h-6 text-primary" />
-                Choose Extras
+                {t("chooseExtras")}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {cakeAddons.map((addon) => (
@@ -207,7 +209,7 @@ export default function CakeConfigurator() {
                       <p className="font-medium text-foreground">{addon.name}</p>
                       <p className="text-xs text-muted-foreground">{addon.description}</p>
                     </div>
-                    <span className="font-semibold text-primary">+${addon.price}</span>
+                    <span className="font-semibold text-primary">+{addon.price} {t("da")}</span>
                   </label>
                 ))}
               </div>
@@ -215,7 +217,7 @@ export default function CakeConfigurator() {
 
             {/* Quantity */}
             <div>
-              <h2 className="text-2xl font-bold mb-4">Quantity</h2>
+              <h2 className="text-2xl font-bold mb-4">{t("quantity")}</h2>
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -235,26 +237,26 @@ export default function CakeConfigurator() {
 
             {/* Price Summary */}
             <div className="bg-card rounded-3xl p-6 shadow-xl border border-border">
-              <h3 className="text-lg font-semibold mb-4">Price Summary</h3>
-              
+              <h3 className="text-lg font-semibold mb-4">{t("priceSummary")}</h3>
+
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">
                     {selectedSize.name} x {quantity}
                   </span>
-                  <span className="font-medium">${selectedSize.price * quantity}</span>
+                  <span className="font-medium">{selectedSize.price * quantity} {t("da")}</span>
                 </div>
-                
+
                 {selectedAddons.length > 0 && (
                   <>
                     <div className="border-t border-border pt-3">
-                      <p className="text-sm text-muted-foreground mb-2">Extras:</p>
+                      <p className="text-sm text-muted-foreground mb-2">{t("extras")}:</p>
                       {selectedAddons.map((addonId) => {
                         const addon = cakeAddons.find((a) => a.id === addonId)
                         return (
                           <div key={addonId} className="flex justify-between text-sm py-1">
                             <span className="text-muted-foreground">+ {addon?.name}</span>
-                            <span className="font-medium">${(addon?.price || 0) * quantity}</span>
+                            <span className="font-medium">{(addon?.price || 0) * quantity} {t("da")}</span>
                           </div>
                         )
                       })}
@@ -263,8 +265,8 @@ export default function CakeConfigurator() {
                 )}
 
                 <div className="border-t border-border pt-4 flex justify-between items-center">
-                  <span className="text-xl font-semibold">Total Price</span>
-                  <span className="text-3xl font-bold text-gradient">${subtotal}</span>
+                  <span className="text-xl font-semibold">{t("totalPrice")}</span>
+                  <span className="text-3xl font-bold text-gradient">{subtotal} {t("da")}</span>
                 </div>
               </div>
 
@@ -274,7 +276,7 @@ export default function CakeConfigurator() {
                 className="w-full rounded-full bg-green-500 hover:bg-green-600 text-white py-6 text-lg animate-pulse-glow"
               >
                 <ShoppingBag className="w-5 h-5 mr-2" />
-                Order via WhatsApp
+                {t("orderViaWhatsApp")}
               </Button>
             </div>
           </div>

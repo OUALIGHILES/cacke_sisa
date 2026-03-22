@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { useLanguage } from "@/contexts/language-context"
 
 export default function ContactForm() {
+  const { t } = useLanguage()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [formData, setFormData] = useState({
@@ -38,16 +40,16 @@ export default function ContactForm() {
         <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
           <CheckCircle className="w-10 h-10 text-green-500" />
         </div>
-        <h3 className="text-2xl font-bold mb-3">Message Sent!</h3>
+        <h3 className="text-2xl font-bold mb-3">{t("messageSent")}</h3>
         <p className="text-muted-foreground mb-6">
-          Thank you for reaching out. We will get back to you within 24 hours.
+          {t("thankYouReachOut")}
         </p>
         <Button
           onClick={() => setIsSubmitted(false)}
           variant="outline"
           className="rounded-full"
         >
-          Send Another Message
+          {t("sendAnother")}
         </Button>
       </div>
     )
@@ -55,14 +57,14 @@ export default function ContactForm() {
 
   return (
     <div className="bg-card rounded-3xl p-8 shadow-xl border border-border">
-      <h2 className="text-2xl font-bold mb-2">Send Us a Message</h2>
+      <h2 className="text-2xl font-bold mb-2">{t("sendUsMessage")}</h2>
       <p className="text-muted-foreground mb-6">
-        Fill out the form below and we will get back to you soon.
+        {t("fillOutForm")}
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="name">Your Name *</Label>
+          <Label htmlFor="name">{t("yourName")} *</Label>
           <Input
             id="name"
             type="text"
@@ -76,7 +78,7 @@ export default function ContactForm() {
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number *</Label>
+            <Label htmlFor="phone">{t("phone")} *</Label>
             <Input
               id="phone"
               type="tel"
@@ -88,7 +90,7 @@ export default function ContactForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email Address</Label>
+            <Label htmlFor="email">{t("yourEmail")}</Label>
             <Input
               id="email"
               type="email"
@@ -101,10 +103,10 @@ export default function ContactForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="message">Your Message *</Label>
+          <Label htmlFor="message">{t("yourMessage")} *</Label>
           <Textarea
             id="message"
-            placeholder="Tell us about your order or ask any questions..."
+            placeholder={t("yourMessage")}
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
             required
@@ -121,12 +123,12 @@ export default function ContactForm() {
           {isSubmitting ? (
             <>
               <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-              Sending...
+              {t("sending")}
             </>
           ) : (
             <>
               <Send className="w-5 h-5 mr-2" />
-              Send Message
+              {t("sendMessage")}
             </>
           )}
         </Button>

@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { 
-  Plus, 
-  Pencil, 
-  Trash2, 
+import {
+  Plus,
+  Pencil,
+  Trash2,
   DollarSign,
   Cake,
   Sparkles,
@@ -21,6 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { useLanguage } from "@/contexts/language-context"
 
 // Sample data
 const initialSizes = [
@@ -40,6 +41,7 @@ const initialAddons = [
 ]
 
 export default function AdminPricingPage() {
+  const { t } = useLanguage()
   const [sizes, setSizes] = useState(initialSizes)
   const [addons, setAddons] = useState(initialAddons)
   const [isLoading, setIsLoading] = useState(false)
@@ -86,7 +88,7 @@ export default function AdminPricingPage() {
   }
 
   const deleteSize = (id: number) => {
-    if (confirm("Delete this size?")) {
+    if (confirm(t("deleteSizeConfirm"))) {
       setSizes(sizes.filter((s) => s.id !== id))
     }
   }
@@ -123,7 +125,7 @@ export default function AdminPricingPage() {
   }
 
   const deleteAddon = (id: number) => {
-    if (confirm("Delete this add-on?")) {
+    if (confirm(t("deleteAddOnConfirm"))) {
       setAddons(addons.filter((a) => a.id !== id))
     }
   }
@@ -132,8 +134,8 @@ export default function AdminPricingPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Pricing Manager</h1>
-        <p className="text-muted-foreground">Manage cake sizes and add-ons pricing</p>
+        <h1 className="text-3xl font-bold">{t("pricingManager")}</h1>
+        <p className="text-muted-foreground">{t("manageSizesAddons")}</p>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
@@ -142,32 +144,32 @@ export default function AdminPricingPage() {
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <Cake className="w-5 h-5 text-primary" />
-              Cake Sizes
+              {t("cakeSizes")}
             </CardTitle>
             <Dialog open={isSizeDialogOpen} onOpenChange={setIsSizeDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" onClick={() => openSizeDialog()} className="rounded-full">
                   <Plus className="w-4 h-4 mr-1" />
-                  Add Size
+                  {t("addSize")}
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>{editingSize ? "Edit Size" : "Add New Size"}</DialogTitle>
+                  <DialogTitle>{editingSize ? t("editSize") : t("addNewSize")}</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSizeSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="sizeName">Size Name</Label>
+                    <Label htmlFor="sizeName">{t("sizeName")}</Label>
                     <Input
                       id="sizeName"
                       value={sizeForm.name}
                       onChange={(e) => setSizeForm({ ...sizeForm, name: e.target.value })}
-                      placeholder="e.g., Medium Cake"
+                      placeholder={`${t("example")} ${t("mediumCake")}`}
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="sizePrice">Price ($)</Label>
+                    <Label htmlFor="sizePrice">{t("price")}</Label>
                     <Input
                       id="sizePrice"
                       type="number"
@@ -179,11 +181,11 @@ export default function AdminPricingPage() {
                   </div>
                   <div className="flex justify-end gap-3">
                     <Button type="button" variant="outline" onClick={() => setIsSizeDialogOpen(false)}>
-                      Cancel
+                      {t("cancel")}
                     </Button>
                     <Button type="submit" disabled={isLoading}>
                       {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                      {editingSize ? "Save" : "Add"}
+                      {editingSize ? t("save") : t("add")}
                     </Button>
                   </div>
                 </form>
@@ -201,7 +203,7 @@ export default function AdminPricingPage() {
                     <p className="font-semibold">{size.name}</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-xl font-bold text-primary">${size.price}</span>
+                    <span className="text-xl font-bold text-primary">{size.price} DA</span>
                     <div className="flex gap-1">
                       <Button
                         size="sm"
@@ -231,32 +233,32 @@ export default function AdminPricingPage() {
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-primary" />
-              Add-ons / Extras
+              {t("addOnsExtras")}
             </CardTitle>
             <Dialog open={isAddonDialogOpen} onOpenChange={setIsAddonDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" onClick={() => openAddonDialog()} className="rounded-full">
                   <Plus className="w-4 h-4 mr-1" />
-                  Add Extra
+                  {t("addExtra")}
                 </Button>
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>{editingAddon ? "Edit Add-on" : "Add New Add-on"}</DialogTitle>
+                  <DialogTitle>{editingAddon ? t("editAddOn") : t("addNewAddOn")}</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleAddonSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="addonName">Add-on Name</Label>
+                    <Label htmlFor="addonName">{t("addOnName")}</Label>
                     <Input
                       id="addonName"
                       value={addonForm.name}
                       onChange={(e) => setAddonForm({ ...addonForm, name: e.target.value })}
-                      placeholder="e.g., Extra Chocolate"
+                      placeholder={t("exampleExtra")}
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="addonPrice">Price ($)</Label>
+                    <Label htmlFor="addonPrice">{t("price")}</Label>
                     <Input
                       id="addonPrice"
                       type="number"
@@ -268,11 +270,11 @@ export default function AdminPricingPage() {
                   </div>
                   <div className="flex justify-end gap-3">
                     <Button type="button" variant="outline" onClick={() => setIsAddonDialogOpen(false)}>
-                      Cancel
+                      {t("cancel")}
                     </Button>
                     <Button type="submit" disabled={isLoading}>
                       {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                      {editingAddon ? "Save" : "Add"}
+                      {editingAddon ? t("save") : t("add")}
                     </Button>
                   </div>
                 </form>
@@ -290,7 +292,7 @@ export default function AdminPricingPage() {
                     <p className="font-semibold">{addon.name}</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-xl font-bold text-green-600">+${addon.price}</span>
+                    <span className="text-xl font-bold text-green-600">+{addon.price} DA</span>
                     <div className="flex gap-1">
                       <Button
                         size="sm"

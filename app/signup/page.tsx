@@ -38,31 +38,31 @@ export default function SignUpPage() {
     const newErrors: typeof errors = {}
 
     if (!formData.name.trim()) {
-      newErrors.name = "Name is required"
+      newErrors.name = t("nameRequired")
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = "Name must be at least 2 characters"
+      newErrors.name = t("nameMinLength")
     }
 
     if (!formData.phone.trim()) {
-      newErrors.phone = "Phone number is required"
+      newErrors.phone = t("phoneRequired")
     } else if (!/^\d{10}$/.test(formData.phone.replace(/\s/g, ""))) {
-      newErrors.phone = "Please enter a valid 10-digit phone number"
+      newErrors.phone = t("validPhone")
     }
 
     if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address"
+      newErrors.email = t("validEmail")
     }
 
     if (!formData.password) {
-      newErrors.password = "Password is required"
+      newErrors.password = t("passwordRequired")
     } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters"
+      newErrors.password = t("passwordMinLength")
     }
 
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password"
+      newErrors.confirmPassword = t("confirmPasswordRequired")
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match"
+      newErrors.confirmPassword = t("passwordsDoNotMatch")
     }
 
     setErrors(newErrors)
@@ -133,9 +133,9 @@ export default function SignUpPage() {
   }
 
   const getPasswordStrengthLabel = (strength: number) => {
-    if (strength <= 2) return "Weak"
-    if (strength <= 4) return "Medium"
-    return "Strong"
+    if (strength <= 2) return t("weak")
+    if (strength <= 4) return t("medium")
+    return t("strong")
   }
 
   return (
@@ -155,9 +155,9 @@ export default function SignUpPage() {
             </div>
           </Link>
           <h1 className="text-3xl font-bold mb-2">
-            <span className="text-gradient">Create Account</span>
+            <span className="text-gradient">{t("createAccount")}</span>
           </h1>
-          <p className="text-muted-foreground">Join SISA_Cake for a sweeter experience</p>
+          <p className="text-muted-foreground">{t("joinForSweeter")}</p>
         </div>
 
         {/* Sign Up Form */}
@@ -165,10 +165,10 @@ export default function SignUpPage() {
           <CardHeader className="text-center pb-2">
             <CardTitle className="text-2xl font-bold flex items-center justify-center gap-2">
               <UserPlus className="w-6 h-6 text-primary" />
-              Sign Up
+              {t("signUp")}
             </CardTitle>
             <CardDescription>
-              Create your account to get started
+              {t("createAccountToGetStarted")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -176,7 +176,7 @@ export default function SignUpPage() {
               {/* Name Input */}
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-sm font-medium">
-                  Full Name
+                  {t("fullName")}
                 </Label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -202,7 +202,7 @@ export default function SignUpPage() {
               {/* Phone Input */}
               <div className="space-y-2">
                 <Label htmlFor="phone" className="text-sm font-medium">
-                  Phone Number
+                  {t("phone")}
                 </Label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -210,7 +210,7 @@ export default function SignUpPage() {
                     id="phone"
                     name="phone"
                     type="tel"
-                    placeholder="0123456789"
+                    placeholder="+213 54 00 00 739"
                     value={formData.phone}
                     onChange={handleChange}
                     className={`pl-11 h-12 ${errors.phone ? "border-destructive focus-visible:ring-destructive/20" : ""}`}
@@ -228,7 +228,7 @@ export default function SignUpPage() {
               {/* Email Input (Optional) */}
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
-                  Email <span className="text-muted-foreground font-normal">(Optional)</span>
+                  {t("email")} <span className="text-muted-foreground font-normal">({t("optional")})</span>
                 </Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -254,7 +254,7 @@ export default function SignUpPage() {
               {/* Password Input */}
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-sm font-medium">
-                  Password
+                  {t("password")}
                 </Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -262,7 +262,7 @@ export default function SignUpPage() {
                     id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Create a strong password"
+                    placeholder={t("createStrongPassword")}
                     value={formData.password}
                     onChange={handleChange}
                     className={`pl-11 pr-11 h-12 ${errors.password ? "border-destructive focus-visible:ring-destructive/20" : ""}`}
@@ -305,7 +305,7 @@ export default function SignUpPage() {
               {/* Confirm Password Input */}
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword" className="text-sm font-medium">
-                  Confirm Password
+                  {t("confirmPassword")}
                 </Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -313,7 +313,7 @@ export default function SignUpPage() {
                     id="confirmPassword"
                     name="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm your password"
+                    placeholder={t("confirmYourPassword")}
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     className={`pl-11 pr-11 h-12 ${errors.confirmPassword ? "border-destructive focus-visible:ring-destructive/20" : ""}`}
@@ -349,32 +349,32 @@ export default function SignUpPage() {
                 {isLoading ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    Creating account...
+                    {t("creatingAccount")}
                   </span>
                 ) : (
-                  "Create Account"
+                  t("createAccount")
                 )}
               </Button>
             </form>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <div className="text-sm text-center text-muted-foreground">
-              Already have an account?{" "}
+              {t("alreadyHaveAccount")}{" "}
               <Link
                 href="/signin"
                 className="text-primary font-semibold hover:underline"
               >
-                Sign in
+                {t("signIn")}
               </Link>
             </div>
             <div className="text-xs text-center text-muted-foreground">
-              By signing up, you agree to our{" "}
+              {t("bySigningUp")}{" "}
               <Link href="#" className="underline hover:text-primary">
-                Terms of Service
+                {t("termsOfService")}
               </Link>{" "}
-              and{" "}
+              {t("and")}{" "}
               <Link href="#" className="underline hover:text-primary">
-                Privacy Policy
+                {t("privacyPolicy")}
               </Link>
             </div>
           </CardFooter>

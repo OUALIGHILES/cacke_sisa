@@ -111,7 +111,7 @@ To create an admin user, run:
 ```sql
 INSERT INTO users (phone, password, role, name, email)
 VALUES (
-    '0000000000',
+    '213540000739',
     'admin123',
     'admin',
     'Admin User',
@@ -153,7 +153,7 @@ VALUES (
 
 ### For Admin:
 1. Use the demo credentials:
-   - Phone: `0000000000`
+   - Phone: `213540000739`
    - Password: `admin123`
 2. After signing in, the admin button will appear in the user dropdown
 3. Access the admin dashboard at `/admin`

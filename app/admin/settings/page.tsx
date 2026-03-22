@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { supabase } from "@/lib/supabase"
+import { useLanguage } from "@/contexts/language-context"
 
 interface Settings {
   instagram: string
@@ -27,6 +28,7 @@ interface Settings {
 }
 
 export default function AdminSettingsPage() {
+  const { t } = useLanguage()
   const [isLoading, setIsLoading] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
@@ -52,7 +54,7 @@ export default function AdminSettingsPage() {
         console.error("Error loading settings:", error)
         // If table doesn't exist, show a message
         if (error.message.includes("relation") || error.message.includes("does not exist")) {
-          alert("Settings table not found. Please run the SQL query in Supabase dashboard to create the table.")
+          alert(t("settingsTableNotFound"))
         }
       } else if (data) {
         setSettings({
@@ -95,7 +97,7 @@ export default function AdminSettingsPage() {
 
     if (error) {
       console.error("Error saving settings:", error)
-      alert(`Error: ${error.message}`)
+      alert(`${t("errorSavingSettings")}: ${error.message}`)
     } else {
       setIsSaved(true)
       // Reset saved message after 3 seconds
@@ -109,23 +111,23 @@ export default function AdminSettingsPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold">Business Settings</h1>
-        <p className="text-muted-foreground">Update your contact information and location</p>
+        <h1 className="text-3xl font-bold">{t("businessSettings")}</h1>
+        <p className="text-muted-foreground">{t("updateContactLocation")}</p>
       </div>
 
       {!isLoaded ? (
         <div className="flex items-center justify-center py-12">
           <Loader2 className="w-6 h-6 animate-spin mr-2" />
-          <span>Loading settings...</span>
+          <span>{t("loadingSettings")}</span>
         </div>
       ) : (
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Contact Information */}
         <Card>
           <CardHeader>
-            <CardTitle>Contact Information</CardTitle>
+            <CardTitle>{t("contactInformation")}</CardTitle>
             <CardDescription>
-              Update your social media and contact details displayed on the website
+              {t("updateSocialContact")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -133,7 +135,7 @@ export default function AdminSettingsPage() {
               <div className="space-y-2">
                 <Label htmlFor="whatsapp" className="flex items-center gap-2">
                   <Phone className="w-4 h-4 text-green-500" />
-                  WhatsApp Number
+                  {t("whatsappNumber")}
                 </Label>
                 <Input
                   id="whatsapp"
@@ -146,7 +148,7 @@ export default function AdminSettingsPage() {
               <div className="space-y-2">
                 <Label htmlFor="email" className="flex items-center gap-2">
                   <Mail className="w-4 h-4 text-blue-500" />
-                  Email Address
+                  {t("emailAddress")}
                 </Label>
                 <Input
                   id="email"
@@ -160,7 +162,7 @@ export default function AdminSettingsPage() {
               <div className="space-y-2">
                 <Label htmlFor="instagram" className="flex items-center gap-2">
                   <Instagram className="w-4 h-4 text-pink-500" />
-                  Instagram Handle
+                  {t("instagramHandle")}
                 </Label>
                 <Input
                   id="instagram"
@@ -171,7 +173,7 @@ export default function AdminSettingsPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="hours">Business Hours</Label>
+                <Label htmlFor="hours">{t("businessHours")}</Label>
                 <Input
                   id="hours"
                   value={settings.businessHours}
@@ -188,15 +190,15 @@ export default function AdminSettingsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <MapPin className="w-5 h-5 text-primary" />
-              Location Settings
+              {t("locationSettings")}
             </CardTitle>
             <CardDescription>
-              Set your business address and map coordinates
+              {t("setBusinessAddress")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="address">Full Address</Label>
+              <Label htmlFor="address">{t("fullAddress")}</Label>
               <Input
                 id="address"
                 value={settings.address}
@@ -207,7 +209,7 @@ export default function AdminSettingsPage() {
 
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="lat">Latitude</Label>
+                <Label htmlFor="lat">{t("latitude")}</Label>
                 <Input
                   id="lat"
                   value={settings.locationLat}
@@ -217,7 +219,7 @@ export default function AdminSettingsPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="lng">Longitude</Label>
+                <Label htmlFor="lng">{t("longitude")}</Label>
                 <Input
                   id="lng"
                   value={settings.locationLng}
@@ -228,7 +230,7 @@ export default function AdminSettingsPage() {
             </div>
 
             <p className="text-sm text-muted-foreground">
-              Tip: You can find coordinates by searching your address on Google Maps and copying the lat/lng from the URL.
+              {t("tipFindCoordinates")}
             </p>
           </CardContent>
         </Card>
@@ -239,12 +241,12 @@ export default function AdminSettingsPage() {
             {isLoading ? (
               <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Saving...
+                {t("saving")}
               </>
             ) : (
               <>
                 <Save className="w-4 h-4 mr-2" />
-                Save Settings
+                {t("saveSettings")}
               </>
             )}
           </Button>
@@ -252,7 +254,7 @@ export default function AdminSettingsPage() {
           {isSaved && (
             <div className="flex items-center gap-2 text-green-600 animate-fade-in-up">
               <CheckCircle className="w-5 h-5" />
-              <span>Settings saved successfully!</span>
+              <span>{t("settingsSaved")}</span>
             </div>
           )}
         </div>

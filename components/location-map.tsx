@@ -1,9 +1,9 @@
 "use client"
 
 export default function LocationMap() {
-  // Default coordinates - New York
-  const lat = 40.7128
-  const lng = -74.006
+  // Ait Anane, Darguina, Bejaia, Algeria
+  const lat = 36.7089
+  const lng = 4.9472
 
   return (
     <div className="relative w-full h-[250px] rounded-2xl overflow-hidden">
